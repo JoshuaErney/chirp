@@ -6,8 +6,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>🐦 Chirp — Toast Notification Demo</title>
     <meta name="description" content="Interactive demo for Chirp, a lightweight dependency-free toast notification library.">
-    <link rel="stylesheet" href="chirp.css">
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="/css/chirp.css">
+    <link rel="stylesheet" href="/css/style.css">
 </head>
 
 <body>
@@ -75,6 +75,16 @@
                 </div>
             </section>
 
+            <!-- New features -->
+            <section class="card" aria-labelledby="section-new">
+                <h2 id="section-new">New Features</h2>
+                <div class="btn-group">
+                    <button type="button" onclick="showProgress()">Progress Bar</button>
+                    <button type="button" onclick="showDedupe()">Dedupe (spam me)</button>
+                    <button type="button" onclick="enableGlobalCallbacks()">Global Callbacks</button>
+                </div>
+            </section>
+
             <!-- Custom -->
             <section class="card" aria-labelledby="section-custom">
                 <h2 id="section-custom">Custom</h2>
@@ -92,8 +102,8 @@
         <p>🐦 Chirp — forked from <a href="https://github.com/nlanger/butterup" target="_blank" rel="noopener noreferrer">Butterup</a> · MIT License</p>
     </footer>
 
-    <script src="chirp.js"></script>
-    <script src="demo.js"></script>
+    <script src="/js/chirp.js"></script>
+    <script src="/js/demo.js"></script>
 </body>
 
 </html>

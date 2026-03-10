@@ -150,5 +150,32 @@ const showOnClick = () => chirp.toast({
     onClick: (e) => console.log('Toast clicked', e),
 });
 
+// Progress bar
+const showProgress = () => chirp.toast({
+    title: 'Progress bar',
+    message: 'Watch the countdown at the bottom.',
+    type: 'info',
+    icon: true,
+    dismissable: true,
+    progress: true,
+});
+
+// Dedupe
+const showDedupe = () => chirp.toast({
+    title: 'Validation error',
+    message: 'Please fill in all required fields.',
+    type: 'error',
+    icon: true,
+    dismissable: true,
+    dedupe: true,
+});
+
+// Global callbacks
+const enableGlobalCallbacks = () => {
+    chirp.options.onToast = (toast) => console.log('Toast created:', toast.id);
+    chirp.options.onDespawn = (toast) => console.log('Toast removed:', toast.id);
+    chirp.toast({ message: 'Global callbacks enabled — check the console.', type: 'info', icon: true, dismissable: true });
+};
+
 // Clear all
 const clearAll = () => chirp.clearAll();

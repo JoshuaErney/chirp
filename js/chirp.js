@@ -8,7 +8,6 @@ const ICONS = {
     loading: '<svg class="animate-spin" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"/><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"/></svg>',
 };
 
-// Helper to create elements with optional class, innerHTML, and attributes
 const el = (tag, cls, html, attrs = {}) => {
     const node = document.createElement(tag);
     if (cls) node.className = cls;
@@ -21,11 +20,16 @@ const chirp = {
     options: {
         maxToasts: 5,
         toastLife: 5000,
+        onToast: null, // Global callback fired when any toast is created
+        onDespawn: null, // Global callback fired when any toast is removed
     },
 
     get currentToasts() {
         return document.getElementById('chirpRack')?.children.length ?? 0;
     },
+
+    // Internal dedup registry: maps `type::title` keys to active toast IDs
+    _dedupeMap: new Map(),
 
     getRack(location, type) {
         let toaster = document.getElementById('chirpToaster');
@@ -54,7 +58,18 @@ const chirp = {
     },
 
     toast({ title, message, type, location, icon, theme, customIcon, dismissable,
-        onClick, onRender, onTimeout, customHTML, primaryButton, secondaryButton }) {
+        onClick, onRender, onTimeout, customHTML, primaryButton, secondaryButton,
+        dedupe = false, progress = false }) {
+
+        // Dedupe: if a toast with the same type + title exists, update it instead
+        if (dedupe && type && title) {
+            const dedupeKey = `${type}::${title}`;
+            const existingId = this._dedupeMap.get(dedupeKey);
+            if (existingId && document.getElementById(existingId)) {
+                this.updatePromiseToast(existingId, { type, message, icon });
+                return existingId;
+            }
+        }
 
         const rack = this.getRack(location, type);
         const toaster = document.getElementById('chirpToaster');
@@ -67,20 +82,19 @@ const chirp = {
             rack.removeChild(rack.firstChild);
         }
 
-        // Build accessible label for dismissable toasts
         const dismissHint = 'Press Enter or Escape to dismiss.';
         const toastAttrs = {
             role: type === 'error' ? 'alert' : 'status',
             'aria-labelledby': labelId,
         };
 
-        // Only add describedby if we'll have both a title and a body
         if (title && (message || customHTML)) toastAttrs['aria-describedby'] = descId;
         if (dismissable) {
             toastAttrs['tabindex'] = '0';
             toastAttrs['aria-label'] = `${title || message || 'Notification'}. ${dismissHint}`;
         }
 
+        // Set --toast-life for the progress bar CSS animation
         const toast = el('li', [
             'chirptoast toast-enter',
             isTop ? 'toastDown' : 'toastUp',
@@ -89,7 +103,14 @@ const chirp = {
         ].filter(Boolean).join(' '), null, toastAttrs);
 
         toast.id = toastId;
+        toast.style.setProperty('--toast-life', `${this.options.toastLife}ms`);
         rack.appendChild(toast);
+
+        // Register in dedup map
+        if (dedupe && type && title) {
+            const dedupeKey = `${type}::${title}`;
+            this._dedupeMap.set(dedupeKey, toastId);
+        }
 
         // Icon
         if (icon) {
@@ -116,7 +137,6 @@ const chirp = {
             }));
         }
 
-        // If nothing set the labelId yet (bare toast), set it on the notif itself
         if (!title && !message && !customHTML) {
             notif.id = labelId;
         }
@@ -137,6 +157,12 @@ const chirp = {
 
         toast.appendChild(notif);
 
+        // Progress bar
+        if (progress) {
+            toast.classList.add('has-progress');
+            toast.appendChild(el('div', 'toast-progress', null, { 'aria-hidden': 'true' }));
+        }
+
         // Events
         if (typeof onClick === 'function') {
             toast.addEventListener('click', e => { e.stopPropagation(); onClick(e); });
@@ -155,6 +181,9 @@ const chirp = {
 
         if (typeof onRender === 'function') onRender(toast);
 
+        // Global onToast callback
+        if (typeof this.options.onToast === 'function') this.options.onToast(toast);
+
         // Timers
         setTimeout(() => toast.classList.remove('toast-enter'), ANIM_DURATION);
         setTimeout(() => {
@@ -168,11 +197,22 @@ const chirp = {
     despawnToast(toastId, onClosed) {
         const toast = document.getElementById(toastId);
         if (!toast) return;
+
+        // Clean up dedup map entry if present
+        for (const [key, id] of this._dedupeMap.entries()) {
+            if (id === toastId) { this._dedupeMap.delete(key); break; }
+        }
+
         toast.classList.add('toast-exit');
+
         setTimeout(() => {
             try {
                 toast.parentNode.removeChild(toast);
                 if (typeof onClosed === 'function') onClosed(toast);
+
+                // Global onDespawn callback
+                if (typeof this.options.onDespawn === 'function') this.options.onDespawn(toast);
+
                 if (this.currentToasts === 0) {
                     const toaster = document.getElementById('chirpToaster');
                     toaster?.parentNode.removeChild(toaster);
@@ -185,8 +225,8 @@ const chirp = {
         const rack = document.getElementById('chirpRack');
         if (!rack) return;
         [...rack.children].forEach(toast => this.despawnToast(toast.id));
+        this._dedupeMap.clear();
 
-        // Announce to screen readers that all notifications were cleared
         const announcement = el('div', 'sr-only', 'All notifications cleared.', {
             'aria-live': 'polite',
             'aria-atomic': 'true',
@@ -195,10 +235,10 @@ const chirp = {
         setTimeout(() => announcement.remove(), 1000);
     },
 
-    promise({ promise, loadingMessage, successMessage, errorMessage, location, theme }) {
+    promise({ promise, loadingMessage, successMessage, errorMessage, location, theme, progress = false }) {
         const toastId = this.toast({
             message: loadingMessage || 'Loading...',
-            location, theme,
+            location, theme, progress,
             icon: true,
             customIcon: ICONS.loading,
             dismissable: false,

@@ -13,6 +13,9 @@ A lightweight, dependency-free toast notification library built with vanilla JS 
 - Dark mode support via `prefers-color-scheme`
 - Reduced motion support via `prefers-reduced-motion`
 - Windows High Contrast mode support via `forced-colors`
+- Progress bar countdown with CSS custom properties
+- Deduplication — repeated toasts update in place instead of stacking
+- Global `onToast` and `onDespawn` callbacks for analytics and logging
 - Multiple toast types: `success`, `error`, `warning`, `info`
 - Multiple themes: `glass`, `brutalist`
 - Promise-based toasts for async workflows
@@ -62,6 +65,8 @@ chirp.toast({
 | `customIcon`      | `string`   | `null`      | Raw HTML/SVG to use as the icon                                                       |
 | `theme`           | `string`   | `null`      | `glass`, `brutalist`                                                                  |
 | `dismissable`     | `boolean`  | `false`     | Dismiss on click, Enter, or Escape                                                    |
+| `progress`        | `boolean`  | `false`     | Show a countdown progress bar                                                         |
+| `dedupe`          | `boolean`  | `false`     | Update existing toast instead of spawning a duplicate                                 |
 | `customHTML`      | `string`   | `null`      | Inject custom HTML into the toast body                                                |
 | `onClick`         | `function` | `null`      | Fires when the toast is clicked                                                       |
 | `onRender`        | `function` | `null`      | Fires immediately after the toast is added to the DOM                                 |
@@ -86,7 +91,7 @@ chirp.despawnToast(id, () => console.log("Toast gone"));
 
 ### `chirp.clearAll()`
 
-Dismisses all active toasts and announces the action to screen readers.
+Dismisses all active toasts, clears the dedup registry, and announces the action to screen readers.
 
 ```js
 chirp.clearAll();
@@ -98,14 +103,15 @@ chirp.clearAll();
 
 Shows a loading toast that updates automatically based on a promise outcome.
 
-| Option           | Type      | Default                  | Description                 |
-| ---------------- | --------- | ------------------------ | --------------------------- |
-| `promise`        | `Promise` | required                 | The promise to track        |
-| `loadingMessage` | `string`  | `'Loading...'`           | Message shown while pending |
-| `successMessage` | `string`  | `'Operation successful'` | Message shown on resolve    |
-| `errorMessage`   | `string`  | `'An error occurred'`    | Message shown on reject     |
-| `location`       | `string`  | `top-right`              | Toast position              |
-| `theme`          | `string`  | `null`                   | `glass`, `brutalist`        |
+| Option           | Type      | Default                  | Description                   |
+| ---------------- | --------- | ------------------------ | ----------------------------- |
+| `promise`        | `Promise` | required                 | The promise to track          |
+| `loadingMessage` | `string`  | `'Loading...'`           | Message shown while pending   |
+| `successMessage` | `string`  | `'Operation successful'` | Message shown on resolve      |
+| `errorMessage`   | `string`  | `'An error occurred'`    | Message shown on reject       |
+| `location`       | `string`  | `top-right`              | Toast position                |
+| `theme`          | `string`  | `null`                   | `glass`, `brutalist`          |
+| `progress`       | `boolean` | `false`                  | Show a countdown progress bar |
 
 ```js
 chirp.promise({
@@ -124,11 +130,47 @@ chirp.promise({
 ```js
 chirp.options.maxToasts = 5; // Max toasts visible at once (default: 5)
 chirp.options.toastLife = 5000; // Auto-dismiss duration in ms (default: 5000)
+chirp.options.onToast = null; // Fired when any toast is created
+chirp.options.onDespawn = null; // Fired when any toast is removed
 ```
 
 ---
 
 ## Examples
+
+**Progress bar**
+
+```js
+chirp.toast({
+	title: "Uploading",
+	message: "Your file is being uploaded.",
+	type: "info",
+	icon: true,
+	progress: true,
+	dismissable: true,
+});
+```
+
+**Deduplication**
+
+```js
+// Repeated calls update the existing toast instead of stacking
+chirp.toast({
+	title: "Validation error",
+	message: "Please fill in all required fields.",
+	type: "error",
+	icon: true,
+	dedupe: true,
+});
+```
+
+**Global callbacks**
+
+```js
+// Set once — fires for every toast in your app
+chirp.options.onToast = (toast) => analytics.track("toast_shown", { id: toast.id });
+chirp.options.onDespawn = (toast) => analytics.track("toast_dismissed", { id: toast.id });
+```
 
 **With buttons**
 
@@ -174,6 +216,7 @@ Chirp is built with accessibility as a core requirement, not an afterthought.
 - All decorative icons include `aria-hidden="true"` and `focusable="false"`
 - `chirp.clearAll()` announces dismissal to screen readers via a temporary live region
 - Focus styles use `:focus-visible` and match each toast type's colour
+- The progress bar is hidden from assistive technology via `aria-hidden="true"`
 
 ---
 
@@ -187,6 +230,7 @@ Chirp targets modern browsers and uses the following features:
 - `forced-colors` — Chromium 89+, Firefox 89+
 - `:focus-visible` — all modern browsers
 - `:is()` selector — all modern browsers
+- CSS custom properties — all modern browsers
 - `backdrop-filter` (glass theme) — all modern browsers; no fallback in Firefox pre-103
 
 ---
