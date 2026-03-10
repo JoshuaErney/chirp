@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🐦 Chirp — Toast Notification Demo</title>
+    <link rel="stylesheet" href="chirp.css">
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+    <header>
+        <h1>🐦 Chirp</h1>
+        <p>Lightweight, dependency-free toast notifications</p>
+    </header>
+
+    <div class="grid">
+
+        <!-- Types -->
+        <div class="card">
+            <h2>Types</h2>
+            <div class="btn-group">
+                <button class="success" onclick="chirp.toast({ title: 'Success', message: 'Your changes have been saved.', type: 'success', icon: true, dismissable: true })">Success</button>
+                <button class="error" onclick="chirp.toast({ title: 'Error',   message: 'Something went wrong.', type: 'error', icon: true, dismissable: true })">Error</button>
+                <button class="warning" onclick="chirp.toast({ title: 'Warning', message: 'This action may have side effects.', type: 'warning', icon: true, dismissable: true })">Warning</button>
+                <button class="info" onclick="chirp.toast({ title: 'Info',    message: 'Here is some useful information.', type: 'info', icon: true, dismissable: true })">Info</button>
+                <button onclick="chirp.toast({ title: 'Default', message: 'A plain toast with no type set.', dismissable: true })">Default</button>
+            </div>
+        </div>
+
+        <!-- Themes -->
+        <div class="card">
+            <h2>Themes</h2>
+            <div class="btn-group">
+                <button onclick="chirp.toast({ title: 'Glass', message: 'Frosted glass effect.', type: 'info', theme: 'glass', icon: true, dismissable: true })">Glass</button>
+                <button onclick="chirp.toast({ title: 'Brutalist', message: 'Bold, no-nonsense style.', type: 'error', theme: 'brutalist', icon: true, dismissable: true })">Brutalist</button>
+                <button onclick="chirp.toast({ title: 'Glass Success', message: 'Glass + type combined.', type: 'success', theme: 'glass', icon: true, dismissable: true })">Glass + Success</button>
+                <button onclick="chirp.toast({ title: 'Brutalist Warning', message: 'Brutalist + type combined.', type: 'warning', theme: 'brutalist', icon: true, dismissable: true })">Brutalist + Warning</button>
+            </div>
+        </div>
+
+        <!-- Positions -->
+        <div class="card">
+            <h2>Positions</h2>
+            <div class="location-grid">
+                <button onclick="chirp.toast({ message: 'Top left',      location: 'top-left',      dismissable: true })">Top Left</button>
+                <button onclick="chirp.toast({ message: 'Top center',    location: 'top-center',    dismissable: true })">Top Center</button>
+                <button onclick="chirp.toast({ message: 'Top right',     location: 'top-right',     dismissable: true })">Top Right</button>
+                <button onclick="chirp.toast({ message: 'Bottom left',   location: 'bottom-left',   dismissable: true })">Bottom Left</button>
+                <button onclick="chirp.toast({ message: 'Bottom center', location: 'bottom-center', dismissable: true })">Bottom Center</button>
+                <button onclick="chirp.toast({ message: 'Bottom right',  location: 'bottom-right',  dismissable: true })">Bottom Right</button>
+            </div>
+        </div>
+
+        <!-- Buttons -->
+        <div class="card">
+            <h2>With Buttons</h2>
+            <div class="btn-group">
+                <button onclick="chirp.toast({
+                    title: 'Delete item?',
+                    message: 'This action cannot be undone.',
+                    type: 'error',
+                    icon: true,
+                    primaryButton:   { text: 'Delete', onClick: () => chirp.toast({ message: 'Item deleted.', type: 'success', icon: true, dismissable: true }) },
+                    secondaryButton: { text: 'Cancel', onClick: () => chirp.toast({ message: 'Cancelled.', dismissable: true }) }
+                })">Confirm Delete</button>
+                <button onclick="chirp.toast({
+                    title: 'New update available',
+                    message: 'Version 2.0 is ready to install.',
+                    type: 'info',
+                    icon: true,
+                    primaryButton:   { text: 'Install now', onClick: () => chirp.toast({ message: 'Installing...', type: 'info', icon: true, dismissable: true }) },
+                    secondaryButton: { text: 'Later',       onClick: () => {} }
+                })">Update Prompt</button>
+            </div>
+        </div>
+
+        <!-- Promise -->
+        <div class="card">
+            <h2>Promise</h2>
+            <div class="btn-group">
+                <button onclick="chirp.promise({
+                    promise: new Promise(res => setTimeout(res, 2000)),
+                    loadingMessage: 'Saving your data...',
+                    successMessage: 'Saved successfully!',
+                    errorMessage:   'Failed to save.',
+                    location: 'top-right'
+                })">Resolve</button>
+                <button onclick="chirp.promise({
+                    promise: new Promise((_, rej) => setTimeout(rej, 2000)),
+                    loadingMessage: 'Connecting...',
+                    successMessage: 'Connected!',
+                    errorMessage:   'Connection failed.',
+                    location: 'top-right'
+                })">Reject</button>
+            </div>
+        </div>
+
+        <!-- Custom -->
+        <div class="card">
+            <h2>Custom</h2>
+            <div class="btn-group">
+                <button onclick="chirp.toast({
+                    message: 'Copied to clipboard.',
+                    icon: true,
+                    customIcon: '<svg xmlns=\'http://www.w3.org/2000/svg\' viewBox=\'0 0 20 20\' fill=\'currentColor\'><path d=\'M8 2a1 1 0 000 2h2a1 1 0 100-2H8z\'/><path d=\'M3 5a2 2 0 012-2 3 3 0 003 3h2a3 3 0 003-3 2 2 0 012 2v6h-4.586l1.293-1.293a1 1 0 00-1.414-1.414l-3 3a1 1 0 000 1.414l3 3a1 1 0 001.414-1.414L10.414 13H15v3a2 2 0 01-2 2H5a2 2 0 01-2-2V5z\'/></svg>',
+                    dismissable: true
+                })">Custom Icon</button>
+                <button onclick="chirp.toast({
+                    customHTML: '<strong>Bold</strong> and <em>italic</em> and <a href=\'#\' style=\'color:inherit\'>a link</a>.',
+                    dismissable: true
+                })">Custom HTML</button>
+                <button onclick="chirp.toast({
+                    title: 'onClick fired',
+                    message: 'Check the console.',
+                    type: 'info',
+                    icon: true,
+                    onClick: (e) => console.log('Toast clicked', e)
+                })">onClick</button>
+            </div>
+        </div>
+
+    </div>
+
+    <footer>
+        <p>🐦 Chirp — forked from <a href="https://github.com/nlanger/butterup" target="_blank">Butterup</a> · MIT License</p>
+    </footer>
+
+    <script src="chirp.js"></script>
+</body>
+
+</html>

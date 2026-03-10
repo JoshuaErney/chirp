@@ -1,4 +1,18 @@
+# OS
 .DS_Store
-index.html
-testing.js
-bg.jpeg
+Thumbs.db
+
+# Editor
+.vscode/
+.idea/
+*.suo
+*.user
+
+# Dependencies
+node_modules/
+
+# Logs
+*.log
+
+# Build output
+dist/
