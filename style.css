@@ -1,130 +1,152 @@
- *,
- *::before,
- *::after {
-     box-sizing: border-box;
- }
+*,
+*::before,
+*::after {
+    box-sizing: border-box;
+}
 
- body {
-     font-family: ui-sans-serif, system-ui, -apple-system, sans-serif;
-     background-color: #f5f5f5;
-     color: #282828;
-     margin: 0;
-     padding: 40px 20px;
- }
+body {
+    font-family: ui-sans-serif, system-ui, -apple-system, sans-serif;
+    background-color: #f5f5f5;
+    color: #282828;
+    margin: 0;
+    padding: 40px 20px;
+}
 
- header {
-     text-align: center;
-     margin-bottom: 48px;
- }
+/* Header */
+header {
+    text-align: center;
+    margin-bottom: 48px;
+}
 
- header h1 {
-     font-size: 2rem;
-     margin: 0 0 8px;
- }
+header h1 {
+    font-size: 2rem;
+    margin: 0 0 8px;
+}
 
- header p {
-     color: #666;
-     margin: 0;
- }
+header p {
+    color: #666;
+    margin: 0 0 16px;
+}
 
- .grid {
-     display: grid;
-     grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-     gap: 24px;
-     max-width: 1000px;
-     margin: 0 auto;
- }
+button.clear-all {
+    background: none;
+    border: 1px solid hsl(0, 0%, 80%);
+    color: #999;
+    font-size: 12px;
+    padding: 6px 14px;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: border-color 0.15s, color 0.15s;
+}
 
- .card {
-     background: white;
-     border-radius: 10px;
-     border: 1px solid hsl(0, 0%, 90%);
-     padding: 24px;
- }
+button.clear-all:hover {
+    border-color: hsl(0, 70%, 60%);
+    color: hsl(0, 70%, 50%);
+}
 
- .card h2 {
-     font-size: 0.85rem;
-     text-transform: uppercase;
-     letter-spacing: 0.08em;
-     color: #999;
-     margin: 0 0 16px;
- }
+/* Grid */
+.grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 24px;
+    max-width: 1000px;
+    margin: 0 auto;
+}
 
- .btn-group {
-     display: flex;
-     flex-wrap: wrap;
-     gap: 8px;
- }
+/* Card */
+.card {
+    background: white;
+    border-radius: 10px;
+    border: 1px solid hsl(0, 0%, 90%);
+    padding: 24px;
+}
 
- button {
-     padding: 8px 14px;
-     border-radius: 6px;
-     border: 1px solid hsl(0, 0%, 88%);
-     background: white;
-     color: #282828;
-     font-size: 13px;
-     cursor: pointer;
-     transition: background 0.15s, border-color 0.15s;
- }
+.card h2 {
+    font-size: 0.85rem;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: #999;
+    margin: 0 0 16px;
+}
 
- button:hover {
-     background: #f0f0f0;
- }
+/* Buttons */
+.btn-group {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
 
- button.success {
-     border-color: hsl(145, 63%, 72%);
-     color: hsl(140, 100%, 27%);
- }
+button {
+    padding: 8px 14px;
+    border-radius: 6px;
+    border: 1px solid hsl(0, 0%, 88%);
+    background: white;
+    color: #282828;
+    font-size: 13px;
+    cursor: pointer;
+    transition: background 0.15s, border-color 0.15s;
+}
 
- button.success:hover {
-     background: #ebfef2;
- }
+button:hover {
+    background: #f0f0f0;
+}
 
- button.error {
-     border-color: hsl(354, 70%, 74%);
-     color: hsl(354, 70%, 44%);
- }
+button.success {
+    border-color: hsl(145, 63%, 72%);
+    color: hsl(140, 100%, 27%);
+}
 
- button.error:hover {
-     background: #fef0f0;
- }
+button.success:hover {
+    background: #ebfef2;
+}
 
- button.warning {
-     border-color: hsl(45, 100%, 76%);
-     color: hsl(45, 100%, 31%);
- }
+button.error {
+    border-color: hsl(354, 70%, 74%);
+    color: hsl(354, 70%, 44%);
+}
 
- button.warning:hover {
-     background: #fffdf0;
- }
+button.error:hover {
+    background: #fef0f0;
+}
 
- button.info {
-     border-color: hsl(207, 90%, 74%);
-     color: hsl(207, 90%, 34%);
- }
+button.warning {
+    border-color: hsl(45, 100%, 76%);
+    color: hsl(45, 100%, 31%);
+}
 
- button.info:hover {
-     background: #f0f8ff;
- }
+button.warning:hover {
+    background: #fffdf0;
+}
 
- .location-grid {
-     display: grid;
-     grid-template-columns: repeat(3, 1fr);
-     gap: 8px;
- }
+button.info {
+    border-color: hsl(207, 90%, 74%);
+    color: hsl(207, 90%, 34%);
+}
 
- .location-grid button {
-     text-align: center;
-     font-size: 12px;
- }
+button.info:hover {
+    background: #f0f8ff;
+}
 
- footer {
-     text-align: center;
-     margin-top: 64px;
-     font-size: 13px;
-     color: #aaa;
- }
+/* Location grid */
+.location-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 8px;
+}
 
- footer a {
-     color: #aaa;
- }
+.location-grid button {
+    text-align: center;
+    font-size: 12px;
+}
+
+/* Footer */
+footer {
+    text-align: center;
+    margin-top: 64px;
+    font-size: 13px;
+    color: #aaa;
+}
+
+footer a {
+    color: #aaa;
+}

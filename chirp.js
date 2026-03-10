@@ -1,3 +1,5 @@
+const ANIM_DURATION = 300; // Must match CSS animation duration
+
 const ICONS = {
     success: '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.857-9.809a.75.75 0 00-1.214-.882l-3.483 4.79-1.88-1.88a.75.75 0 10-1.06 1.061l2.5 2.5a.75.75 0 001.137-.089l4-5.5z" clip-rule="evenodd"/></svg>',
     error: '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.28 7.22a.75.75 0 00-1.06 1.06L8.94 10l-1.72 1.72a.75.75 0 101.06 1.06L10 11.06l1.72 1.72a.75.75 0 101.06-1.06L11.06 10l1.72-1.72a.75.75 0 00-1.06-1.06L10 8.94 8.28 7.22z" clip-rule="evenodd"/></svg>',
@@ -17,7 +19,10 @@ const chirp = {
     options: {
         maxToasts: 5,
         toastLife: 5000,
-        currentToasts: 0,
+    },
+
+    get currentToasts() {
+        return document.getElementById('chirpRack')?.children.length ?? 0;
     },
 
     getRack(location) {
@@ -40,13 +45,13 @@ const chirp = {
 
         const rack = this.getRack(location);
 
-        if (this.options.currentToasts >= this.options.maxToasts) {
+        if (this.currentToasts >= this.options.maxToasts) {
             rack.removeChild(rack.firstChild);
-            this.options.currentToasts--;
         }
 
         const toaster = document.getElementById('chirpToaster');
         const isTop = ['top-right', 'top-center', 'top-left'].some(c => toaster.className.includes(c));
+        const toastId = `chirpToast-${Date.now()}`;
 
         const toast = el('li', [
             'chirptoast toast-enter',
@@ -55,7 +60,7 @@ const chirp = {
             theme,
         ].filter(Boolean).join(' '));
 
-        toast.id = `chirpToast-${++this.options.currentToasts}`;
+        toast.id = toastId;
         rack.appendChild(toast);
 
         // Icon
@@ -91,16 +96,18 @@ const chirp = {
         }
         if (dismissable) {
             toast.classList.add('dismissable');
-            toast.addEventListener('click', () => this.despawnToast(toast.id));
+            toast.addEventListener('click', () => this.despawnToast(toastId));
         }
         if (typeof onRender === 'function') onRender(toast);
 
         // Timers
-        setTimeout(() => toast.classList.remove('toast-enter'), 300);
+        setTimeout(() => toast.classList.remove('toast-enter'), ANIM_DURATION);
         setTimeout(() => {
             if (typeof onTimeout === 'function') onTimeout(toast);
-            this.despawnToast(toast.id);
+            this.despawnToast(toastId);
         }, this.options.toastLife);
+
+        return toastId;
     },
 
     despawnToast(toastId, onClosed) {
@@ -110,19 +117,23 @@ const chirp = {
         setTimeout(() => {
             try {
                 toast.parentNode.removeChild(toast);
-                this.options.currentToasts--;
                 if (typeof onClosed === 'function') onClosed(toast);
-                if (this.options.currentToasts === 0) {
+                if (this.currentToasts === 0) {
                     const toaster = document.getElementById('chirpToaster');
                     toaster?.parentNode.removeChild(toaster);
                 }
             } catch { }
-        }, 300);
+        }, ANIM_DURATION);
+    },
+
+    clearAll() {
+        const rack = document.getElementById('chirpRack');
+        if (!rack) return;
+        [...rack.children].forEach(toast => this.despawnToast(toast.id));
     },
 
     promise({ promise, loadingMessage, successMessage, errorMessage, location, theme }) {
-        const toastId = `chirpToast-${this.options.currentToasts + 1}`;
-        this.toast({
+        const toastId = this.toast({
             message: loadingMessage || 'Loading...',
             location, theme,
             icon: true,

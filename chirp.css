@@ -115,6 +115,11 @@ ol.rack.lowerstack {
 }
 
 /* Content */
+.notif {
+    flex: 1;
+    min-width: 0;
+}
+
 .notif .desc {
     display: flex;
     flex-direction: column;
@@ -244,7 +249,7 @@ ol.rack.lowerstack {
     border-color: hsl(207, 90%, 74%);
 }
 
-/* Animations */
+/* Animations — duration must match ANIM_DURATION in chirp.js */
 @keyframes spin {
     to {
         transform: rotate(360deg);
@@ -278,6 +283,7 @@ ol.rack.lowerstack {
 @keyframes fadeOut {
     to {
         opacity: 0;
+        transform: translateY(-8px);
     }
 }
 
@@ -294,6 +300,11 @@ ol.rack.lowerstack {
 }
 
 .fadeOutToast {
+    animation: fadeOut 0.3s ease-in-out forwards;
+}
+
+/* Exit animation — triggered by despawnToast() */
+.toast-exit {
     animation: fadeOut 0.3s ease-in-out forwards;
 }
 
