@@ -5,6 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>🐦 Chirp — Toast Notification Demo</title>
+    <meta name="description" content="Interactive demo for Chirp, a lightweight dependency-free toast notification library.">
     <link rel="stylesheet" href="chirp.css">
     <link rel="stylesheet" href="style.css">
 </head>
@@ -14,79 +15,81 @@
     <header>
         <h1>🐦 Chirp</h1>
         <p>Lightweight, dependency-free toast notifications</p>
-        <button class="clear-all" onclick="clearAll()">Clear all</button>
+        <button type="button" class="clear-all" onclick="clearAll()">Clear all</button>
     </header>
 
-    <div class="grid">
+    <main>
+        <div class="grid">
 
-        <!-- Types -->
-        <div class="card">
-            <h2>Types</h2>
-            <div class="btn-group">
-                <button class="success" onclick="showSuccess()">Success</button>
-                <button class="error" onclick="showError()">Error</button>
-                <button class="warning" onclick="showWarning()">Warning</button>
-                <button class="info" onclick="showInfo()">Info</button>
-                <button onclick="showDefault()">Default</button>
-            </div>
+            <!-- Types -->
+            <section class="card" aria-labelledby="section-types">
+                <h2 id="section-types">Types</h2>
+                <div class="btn-group">
+                    <button type="button" class="success" onclick="showSuccess()">Success</button>
+                    <button type="button" class="error" onclick="showError()">Error</button>
+                    <button type="button" class="warning" onclick="showWarning()">Warning</button>
+                    <button type="button" class="info" onclick="showInfo()">Info</button>
+                    <button type="button" onclick="showDefault()">Default</button>
+                </div>
+            </section>
+
+            <!-- Themes -->
+            <section class="card" aria-labelledby="section-themes">
+                <h2 id="section-themes">Themes</h2>
+                <div class="btn-group">
+                    <button type="button" onclick="showGlass()">Glass</button>
+                    <button type="button" onclick="showBrutalist()">Brutalist</button>
+                    <button type="button" onclick="showGlassSuccess()">Glass + Success</button>
+                    <button type="button" onclick="showBrutalistWarning()">Brutalist + Warning</button>
+                </div>
+            </section>
+
+            <!-- Positions -->
+            <section class="card" aria-labelledby="section-positions">
+                <h2 id="section-positions">Positions</h2>
+                <div class="location-grid" role="group" aria-label="Toast position options">
+                    <button type="button" onclick="showPosition('top-left')">Top Left</button>
+                    <button type="button" onclick="showPosition('top-center')">Top Center</button>
+                    <button type="button" onclick="showPosition('top-right')">Top Right</button>
+                    <button type="button" onclick="showPosition('bottom-left')">Bottom Left</button>
+                    <button type="button" onclick="showPosition('bottom-center')">Bottom Center</button>
+                    <button type="button" onclick="showPosition('bottom-right')">Bottom Right</button>
+                </div>
+            </section>
+
+            <!-- Buttons -->
+            <section class="card" aria-labelledby="section-buttons">
+                <h2 id="section-buttons">With Buttons</h2>
+                <div class="btn-group">
+                    <button type="button" onclick="showConfirmDelete()">Confirm Delete</button>
+                    <button type="button" onclick="showUpdatePrompt()">Update Prompt</button>
+                </div>
+            </section>
+
+            <!-- Promise -->
+            <section class="card" aria-labelledby="section-promise">
+                <h2 id="section-promise">Promise</h2>
+                <div class="btn-group">
+                    <button type="button" onclick="showPromiseResolve()">Resolve</button>
+                    <button type="button" onclick="showPromiseReject()">Reject</button>
+                </div>
+            </section>
+
+            <!-- Custom -->
+            <section class="card" aria-labelledby="section-custom">
+                <h2 id="section-custom">Custom</h2>
+                <div class="btn-group">
+                    <button type="button" onclick="showCustomIcon()">Custom Icon</button>
+                    <button type="button" onclick="showCustomHTML()">Custom HTML</button>
+                    <button type="button" onclick="showOnClick()">onClick</button>
+                </div>
+            </section>
+
         </div>
-
-        <!-- Themes -->
-        <div class="card">
-            <h2>Themes</h2>
-            <div class="btn-group">
-                <button onclick="showGlass()">Glass</button>
-                <button onclick="showBrutalist()">Brutalist</button>
-                <button onclick="showGlassSuccess()">Glass + Success</button>
-                <button onclick="showBrutalistWarning()">Brutalist + Warning</button>
-            </div>
-        </div>
-
-        <!-- Positions -->
-        <div class="card">
-            <h2>Positions</h2>
-            <div class="location-grid">
-                <button onclick="showPosition('top-left')">Top Left</button>
-                <button onclick="showPosition('top-center')">Top Center</button>
-                <button onclick="showPosition('top-right')">Top Right</button>
-                <button onclick="showPosition('bottom-left')">Bottom Left</button>
-                <button onclick="showPosition('bottom-center')">Bottom Center</button>
-                <button onclick="showPosition('bottom-right')">Bottom Right</button>
-            </div>
-        </div>
-
-        <!-- Buttons -->
-        <div class="card">
-            <h2>With Buttons</h2>
-            <div class="btn-group">
-                <button onclick="showConfirmDelete()">Confirm Delete</button>
-                <button onclick="showUpdatePrompt()">Update Prompt</button>
-            </div>
-        </div>
-
-        <!-- Promise -->
-        <div class="card">
-            <h2>Promise</h2>
-            <div class="btn-group">
-                <button onclick="showPromiseResolve()">Resolve</button>
-                <button onclick="showPromiseReject()">Reject</button>
-            </div>
-        </div>
-
-        <!-- Custom -->
-        <div class="card">
-            <h2>Custom</h2>
-            <div class="btn-group">
-                <button onclick="showCustomIcon()">Custom Icon</button>
-                <button onclick="showCustomHTML()">Custom HTML</button>
-                <button onclick="showOnClick()">onClick</button>
-            </div>
-        </div>
-
-    </div>
+    </main>
 
     <footer>
-        <p>🐦 Chirp — forked from <a href="https://github.com/nlanger/butterup" target="_blank">Butterup</a> · MIT License</p>
+        <p>🐦 Chirp — forked from <a href="https://github.com/nlanger/butterup" target="_blank" rel="noopener noreferrer">Butterup</a> · MIT License</p>
     </footer>
 
     <script src="chirp.js"></script>
